@@ -83,14 +83,17 @@ const router = createRouter({
 });
 
 const server = http.createServer(
-  createRequestListener(async (request, client) => {
-    try {
-      return await router.fetch(withClientAddress(request, client.address));
-    } catch (error) {
-      console.error(error);
-      return new Response("Internal Server Error", { status: 500 });
-    }
-  }),
+  createRequestListener(
+    async (request, client) => {
+      try {
+        return await router.fetch(withClientAddress(request, client.address));
+      } catch (error) {
+        console.error(error);
+        return new Response("Internal Server Error", { status: 500 });
+      }
+    },
+    { trustProxy: true },
+  ),
 );
 
 server.listen(PORT, () => {
